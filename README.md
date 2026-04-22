@@ -38,3 +38,6 @@ flask db upgrade
 # 4. Run the app
 flask run
 ```
+
+
+<!-- Fix #6 -->
