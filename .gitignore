@@ -20,6 +20,10 @@ dist/
 build/
 *.egg-info/
 
+# Uploaded files (user content, not source code)
+web/static/uploads/*
+!web/static/uploads/.gitkeep
+
 # IDEs
 .vscode/
 .idea/
