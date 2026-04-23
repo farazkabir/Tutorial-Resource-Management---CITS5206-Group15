@@ -1,9 +1,11 @@
 from flask import Flask, render_template
 from models import db, Material
+from auth_routes import auth_bp
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///materials.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.register_blueprint(auth_bp, url_prefix="/auth")
 
 db.init_app(app)
 
