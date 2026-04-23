@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Login · WMAA Tutorials{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50">
+  <div class="mx-auto max-w-md px-4 py-14">
+    <div class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200/60">
+      <h1 class="text-xl font-semibold tracking-tight text-slate-900">Admin Login</h1>
+      <p class="mt-1 text-sm text-slate-600">Log in to access the admin pages.</p>
+
+      <form class="mt-6 space-y-4" method="post">
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Username</label>
+          <input name="username" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/30" autocomplete="username" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Password</label>
+          <input name="password" type="password" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/30" autocomplete="current-password" />
+        </div>
+        <button class="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Log in</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
