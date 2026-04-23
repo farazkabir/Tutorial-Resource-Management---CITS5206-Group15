@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}WMAA Tutorials{% endblock %}</title>
+
+    <!-- Tailwind CSS (CDN for simplicity) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    {% block styles %}{% endblock %}
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased flex flex-col">
+    <main class="flex-1">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="mx-auto mt-4 max-w-6xl px-4 sm:px-6">
+            <div class="space-y-2">
+              {% for category, message in messages %}
+                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm">
+                  <span class="font-semibold">{{ category|capitalize }}</span> — {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white/95">
+      <div class="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6 sm:px-6 md:flex-row md:items-center md:justify-between md:gap-6">
+        <div class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5A7.5 7.5 0 003 6.5v12A7.5 7.5 0 017.5 17c1.746 0 3.332.477 4.5 1.253m0 0C13.168 17.477 14.754 17 16.5 17A7.5 7.5 0 0121 18.5v-12A7.5 7.5 0 0016.5 5c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </span>
+          <span class="text-sm font-semibold tracking-tight text-slate-900 sm:text-base">WMAA Tutorial Resources</span>
+        </div>
+
+        <nav class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-slate-600 md:justify-center" aria-label="Footer navigation">
+          <a href="{{ url_for('main.materials') }}" class="transition-colors hover:text-blue-700">Tutorials</a>
+          <a href="{{ url_for('main.home') }}" class="transition-colors hover:text-blue-700">Categories</a>
+          <a href="{{ url_for('auth.login') }}" class="transition-colors hover:text-blue-700">Admin</a>
+        </nav>
+
+        <p class="text-sm text-slate-500 md:text-right">© 2026 WMAA. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
