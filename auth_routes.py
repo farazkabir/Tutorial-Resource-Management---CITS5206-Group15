@@ -1,58 +1,29 @@
-from flask import Blueprint, request, jsonify
-from models import db, User
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from werkzeug.security import check_password_hash
+from models import User
 
 auth_bp = Blueprint("auth", __name__)
 
-@auth_bp.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
 
-    if not data:
-        return jsonify({"error": "No data"}), 400
-
-    username = data.get("username")
-    email = data.get("email")
-    password = data.get("password")
-
-    if not username or not email or not password:
-        return jsonify({"error": "Missing fields"}), 400
-
-    if User.query.filter_by(email=email).first():
-        return jsonify({"error": "Email already exists"}), 400
-
-    user = User(
-        username=username,
-        email=email,
-        password_hash=generate_password_hash(password)
-    )
-
-    db.session.add(user)
-    db.session.commit()
-
-    return jsonify({"message": "Registered successfully"}), 201
-
-
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    data = request.get_json()
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-    if not data:
-        return jsonify({"error": "No data"}), 400
+        user = User.query.filter_by(username=username).first()
 
-    email = data.get("email")
-    password = data.get("password")
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            session['username'] = user.username
+            return redirect(url_for('admin_materials'))
+        else:
+            flash('Invalid username or password')
 
-    user = User.query.filter_by(email=email).first()
+    return render_template("login.html")
 
-    if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({"error": "Invalid email or password"}), 401
 
-    return jsonify({
-        "message": "Login successful",
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email
-        }
-    })
+@auth_bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('auth.login'))
