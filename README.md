@@ -18,7 +18,7 @@ Features:
 
 ## Tech Stack
 
-* Flask + SQLAlchemy + Flask-Login
+* Flask + SQLAlchemy + Flask-Login + Flask-Migrate
 * Bootstrap + Chart.js (will gradually be replaced with video display features)
 * Supports YouTube iframe embedding
 
@@ -32,9 +32,18 @@ python3 -m venv .venv
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Database migration
-flask db upgrade
+# 3. Database migration (first time)
+flask --app app:create_app db init
+flask --app app:create_app db migrate -m "init"
+flask --app app:create_app db upgrade
 
 # 4. Run the app
-flask run
+flask --app app:create_app run
 ```
+
+## Routes
+
+* `/` Home
+* `/materials/<id>` View material
+* `/auth/login` Login
+* `/admin/materials` Admin (requires login + admin user)
