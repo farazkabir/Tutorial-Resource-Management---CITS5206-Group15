@@ -24,6 +24,11 @@ def create_app(config_object: type[Config] = Config) -> Flask:
 
     from . import models  # noqa: F401
 
+    if login_manager is not None:
+        @login_manager.user_loader
+        def load_user(user_id):
+            return models.User.query.get(int(user_id))
+
     # Always register main (home page)
     from .main.routes import main_bp
 
