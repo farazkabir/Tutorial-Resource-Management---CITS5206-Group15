@@ -119,7 +119,7 @@
       <!-- Rich Text Content -->
       <div id="field-content" class="field-section space-y-1.5">
         <label class="text-sm font-medium text-slate-700">Content</label>
-        <div id="editor" class="bg-white rounded-lg"></div>
+        <div id="editor" class="bg-white rounded-lg" data-initial-content="{{ material.content if editing and material.content else '' }}"></div>
         <input type="hidden" name="content" id="contentInput">
       </div>
 
@@ -255,9 +255,7 @@
     }
   });
 
-  {% if editing and material.content %}
-    quill.root.innerHTML = {{ material.content | tojson }};
-  {% endif %}
+  quill.root.innerHTML = document.getElementById('editor').dataset.initialContent || '';
 
   document.getElementById('tutorialForm').addEventListener('submit', function () {
     document.getElementById('contentInput').value = quill.root.innerHTML;
