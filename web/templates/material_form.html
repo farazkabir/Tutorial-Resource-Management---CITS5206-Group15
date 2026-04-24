@@ -1,9 +1,25 @@
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
   <label>Material Title</label>
   <input type="text" name="title" placeholder="Enter material title" required>
 
   <label>Description</label>
-  <textarea name="description" placeholder="Enter material description" required></textarea>
+  <textarea name="description" placeholder="Enter material description"></textarea>
+
+  <label>Media Type</label>
+  <select name="media_type">
+    <option value="text">Text</option>
+    <option value="pdf">PDF</option>
+    <option value="video">Video</option>
+    <option value="mixed">Mixed</option>
+  </select>
+
+  <label>Display Order</label>
+  <input type="number" name="display_order" value="0">
+
+  <label>
+    <input type="checkbox" name="is_published">
+    Publish material
+  </label>
 
   <button type="submit">Save Material</button>
 </form>
