@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 
 from ..models import Category, Material
 
@@ -14,10 +14,22 @@ def home():
 
 @main_bp.route("/materials")
 def materials():
-    materials = Material.query.order_by(Material.created_at.desc()).all()
-    categories = Category.query.all()
-    return render_template("home.html", materials=materials, categories=categories)
+    category_id = request.args.get("category_id", type=int)
 
+    query = Material.query
+
+    if category_id:
+        query = query.filter(Material.category_id == category_id)
+
+    materials = query.order_by(Material.created_at.desc()).all()
+    categories = Category.query.all()
+
+    return render_template(
+        "materials.html",
+        materials=materials,
+        categories=categories,
+        selected_category_id=category_id
+    )
 
 @main_bp.route("/materials/<int:material_id>")
 def view_material(material_id):
