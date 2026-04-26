@@ -46,25 +46,28 @@ def change_password():
         confirm_password = request.form.get("confirm_password", "")
 
         if not current_user.check_password(current_password):
-            flash("Current password is incorrect.", "error")
-            return render_template("change_password.html")
+            return render_template(
+                "change_password.html",
+                current_error="Current password is incorrect."
+            )
 
         if new_password != confirm_password:
-            flash("New passwords do not match.", "error")
-            return render_template("change_password.html")
+            return render_template(
+                "change_password.html",
+                confirm_error="New passwords do not match."
+            )
 
         if not valid_password(new_password):
-            flash(
-                "Password must be at least 6 characters and include at least one uppercase and one lowercase letter.",
-                "error"
+            return render_template(
+                "change_password.html",
+                new_error="Password must be at least 6 characters and include one uppercase and one lowercase letter."
             )
-            return render_template("change_password.html")
 
         current_user.set_password(new_password)
         db.session.commit()
 
         flash("Password changed successfully.", "success")
-        return redirect(url_for("auth.change_password"))
+        return redirect(url_for("admin.dashboard"))
 
     return render_template("change_password.html")
 
