@@ -51,8 +51,10 @@
 
   <!-- Rich text content -->
   {% if material.content and material.content != '<p><br></p>' %}
-    <div class="prose prose-slate mt-8 max-w-none">
-      {{ material.content | safe }}
+    <div class="mt-10 rounded-3xl bg-gradient-to-b from-white to-blue-50/60 p-10 shadow-sm border border-slate-100">
+      <div class="prose prose-slate prose-lg max-w-none">
+        {{ material.content | safe }}
+      </div>
     </div>
   {% endif %}
 
