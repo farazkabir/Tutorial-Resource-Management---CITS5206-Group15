@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-50">
+  <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+
+    <h1 class="text-3xl font-semibold text-slate-900">Materials</h1>
+
+    <!-- category -->
+    <div class="mt-6 flex flex-wrap gap-2">
+      <a href="{{ url_for('main.materials') }}"
+         class="px-4 py-2 rounded-full text-sm
+         {% if not selected_category_id %} bg-blue-600 text-white {% else %} bg-white ring-1 ring-slate-200 {% endif %}">
+        All
+      </a>
+
+      {% for c in categories %}
+        <a href="{{ url_for('main.materials', category_id=c.id) }}"
+           class="px-4 py-2 rounded-full text-sm
+           {% if selected_category_id == c.id %} bg-blue-600 text-white {% else %} bg-white ring-1 ring-slate-200 {% endif %}">
+          {{ c.name }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <!-- cards -->
+    <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+      {% for m in materials %}
+      <a href="{{ url_for('main.view_material', material_id=m.id) }}"
+         class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 hover:ring-slate-300">
+
+        {% if m.thumbnail %}
+          <img src="{{ url_for('static', filename='uploads/' + m.thumbnail) }}"
+               class="h-40 w-full object-cover">
+        {% else %}
+          <div class="h-40 bg-slate-100 flex items-center justify-center text-slate-300">
+            No Image
+          </div>
+        {% endif %}
+
+        <div class="p-5 flex flex-col flex-1">
+
+          {% if m.category %}
+            <span class="mb-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full w-fit">
+              {{ m.category.name }}
+            </span>
+          {% endif %}
+
+          <div class="font-semibold text-slate-900 group-hover:text-blue-700">
+            {{ m.title }}
+          </div>
+
+          <div class="text-sm text-slate-500 mt-1 line-clamp-2">
+            {{ m.description }}
+          </div>
+
+          <div class="mt-auto pt-4 text-sm text-blue-600 font-semibold">
+            View →
+          </div>
+
+        </div>
+      </a>
+      {% endfor %}
+
+    </div>
+
+  </main>
+</div>
+{% endblock %}
