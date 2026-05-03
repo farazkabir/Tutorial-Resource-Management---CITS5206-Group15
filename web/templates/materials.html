@@ -13,19 +13,21 @@
     <!-- category -->
     <div class="mt-6 flex flex-wrap gap-2">
       <a href="{{ url_for('main.materials') }}"
-         class="px-4 py-2 rounded-full text-sm
+         class="px-4 py-2 rounded-full text-sm transition-colors
          {% if not selected_category_id %} bg-blue-600 text-white {% else %} bg-white ring-1 ring-slate-200 {% endif %}">
         All
       </a>
 
       {% for c in categories %}
         <a href="{{ url_for('main.materials', category_id=c.id) }}"
-           class="px-4 py-2 rounded-full text-sm
-           {% if selected_category_id == c.id %} bg-blue-600 text-white {% else %} bg-white ring-1 ring-slate-200 {% endif %}">
+            class="category-badge px-4 py-2 text-sm transition-all 
+            {{ 'is-active' if selected_category_id == c.id else 'hover:opacity-100 opacity-80' }}"
+            data-category="{{ c.name }}">
           {{ c.name }}
         </a>
       {% endfor %}
     </div>
+
 
     <!-- cards -->
     <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -46,7 +48,7 @@
         <div class="p-5 flex flex-col flex-1">
 
           {% if m.category %}
-            <span class="mb-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full w-fit">
+            <span class="category-badge" data-category="{{ m.category.name }}">
               {{ m.category.name }}
             </span>
           {% endif %}
