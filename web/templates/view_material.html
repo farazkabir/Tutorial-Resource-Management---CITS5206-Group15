@@ -10,7 +10,7 @@
 
   <div class="mt-6 flex flex-wrap items-center gap-2">
     {% if material.category %}
-      <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-100">{{ material.category.name }}</span>
+      <span class="category-badge" data-category="{{ material.category.name }}">{{ material.category.name }}</span>
     {% endif %}
     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">{{ material.media_type }}</span>
   </div>
@@ -18,15 +18,19 @@
   <h1 class="mt-4 text-3xl font-semibold tracking-tight text-slate-900">{{ material.title }}</h1>
 
   {% if material.description %}
-    <p class="mt-4 text-base leading-7 text-slate-600">{{ material.description }}</p>
+      <p class="mt-4 text-base leading-7 text-slate-600" >{{ material.description }}</p>
   {% endif %}
 
   <!-- YouTube / Video embed -->
+   <!-- UI/UX enhancements for the iframe -->
   {% if material.video_url %}
     <div class="mt-8 aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-lg">
       {% if "youtube.com" in material.video_url or "youtu.be" in material.video_url %}
         {% set vid_id = material.video_url.split("v=")[1].split("&")[0] if "v=" in material.video_url else material.video_url.split("/")[-1] %}
-        <iframe class="h-full w-full" src="https://www.youtube.com/embed/{{ vid_id }}" allowfullscreen></iframe>
+        <iframe class="h-full w-full"
+                src="https://www.youtube.com/embed/{{ vid_id }}?rel=0&modestbranding=1"
+                frameborder="0"
+                allowfullscreen></iframe>
       {% else %}
         <video class="h-full w-full" controls>
           <source src="{{ material.video_url }}">
