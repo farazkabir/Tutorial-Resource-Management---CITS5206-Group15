@@ -1,7 +1,22 @@
+"""
+Admin CRUD routes for tutorial management.
+
+Blueprint: ``admin`` (mounted at /admin)
+All routes require Flask-Login. Handles file uploads to static/uploads/.
+"""
+
 import os
 import uuid
 
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import login_required
 from werkzeug.utils import secure_filename
 
@@ -10,18 +25,35 @@ from ..models import Attachment, Category, Material
 
 admin_bp = Blueprint("admin", __name__, template_folder="../templates")
 
+# Extensions permitted for thumbnail and attachment uploads
 ALLOWED_EXTENSIONS = {
-    "pdf", "doc", "docx",
-    "png", "jpg", "jpeg", "gif", "webp",
-    "mp4", "webm", "mov", "avi",
+    "pdf",
+    "doc",
+    "docx",
+    "png",
+    "jpg",
+    "jpeg",
+    "gif",
+    "webp",
+    "mp4",
+    "webm",
+    "mov",
+    "avi",
 }
 
 
 def _allowed(filename: str) -> bool:
+    """Return True if the file extension is in ALLOWED_EXTENSIONS."""
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def _save_file(file) -> str | None:
+    """
+    Persist an uploaded file with a UUID filename.
+
+    Returns:
+        Stored filename on success, or None if missing / disallowed.
+    """
     if not file or not file.filename:
         return None
     if not _allowed(file.filename):
@@ -35,6 +67,7 @@ def _save_file(file) -> str | None:
 
 
 def _file_type(filename: str) -> str:
+    """Map file extension to a logical type for Attachment.file_type."""
     ext = filename.rsplit(".", 1)[1].lower() if "." in filename else ""
     if ext == "pdf":
         return "pdf"
@@ -48,6 +81,7 @@ def _file_type(filename: str) -> str:
 
 
 def _remove_file(filename: str) -> None:
+    """Delete a file from UPLOAD_FOLDER if it exists (ignore missing)."""
     if not filename:
         return
     path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
@@ -55,8 +89,15 @@ def _remove_file(filename: str) -> None:
         os.remove(path)
 
 
-def _handle_attachments(mat, form_field, forced_type=None):
-    """Save uploaded files from a form field as Attachment rows."""
+def _handle_attachments(mat, form_field: str, forced_type=None) -> None:
+    """
+    Save all files from a multi-file form field as Attachment rows.
+
+    Args:
+        mat: Material instance (must be flushed so mat.id exists).
+        form_field: Name of the <input type="file" multiple> field.
+        forced_type: Optional override for Attachment.file_type (e.g. 'pdf').
+    """
     for f in request.files.getlist(form_field):
         saved = _save_file(f)
         if saved:
@@ -69,20 +110,23 @@ def _handle_attachments(mat, form_field, forced_type=None):
             db.session.add(att)
 
 
-# ── Dashboard (main admin page with materials list) ─────────────
-
 @admin_bp.route("/")
 @login_required
 def dashboard():
+    """List all tutorials with links to create, edit, and delete."""
     materials = Material.query.order_by(Material.created_at.desc()).all()
     return render_template("admin_dashboard.html", materials=materials)
 
 
-# ── Create ───────────────────────────────────────────────────────
-
 @admin_bp.route("/materials/create", methods=["GET", "POST"])
 @login_required
 def create_material():
+    """
+    Create a new Material from admin_form.html.
+
+    Accepts multipart form: metadata, Quill HTML content, thumbnail,
+    PDF/video attachments, category slug, and publish flag.
+    """
     categories = Category.query.order_by(Category.name).all()
 
     if request.method == "POST":
@@ -126,11 +170,14 @@ def create_material():
     return render_template("admin_form.html", categories=categories, material=None)
 
 
-# ── Edit ─────────────────────────────────────────────────────────
-
 @admin_bp.route("/materials/<int:material_id>/edit", methods=["GET", "POST"])
 @login_required
 def edit_material(material_id):
+    """
+    Update an existing Material; replace thumbnail/attachments as submitted.
+
+    POST may include delete_attachments[] checkboxes to remove files from disk.
+    """
     mat = Material.query.get_or_404(material_id)
     categories = Category.query.order_by(Category.name).all()
 
@@ -162,7 +209,7 @@ def edit_material(material_id):
             _remove_file(mat.thumbnail)
             mat.thumbnail = saved_thumb
 
-        # Remove attachments the user checked for deletion
+        # Remove attachments the user marked for deletion
         for att_id in request.form.getlist("delete_attachments"):
             att = Attachment.query.get(int(att_id))
             if att and att.material_id == mat.id:
@@ -181,11 +228,10 @@ def edit_material(material_id):
     return render_template("admin_form.html", categories=categories, material=mat)
 
 
-# ── Delete ───────────────────────────────────────────────────────
-
 @admin_bp.route("/materials/<int:material_id>/delete", methods=["POST"])
 @login_required
 def delete_material(material_id):
+    """Permanently delete a tutorial and its files from disk."""
     mat = Material.query.get_or_404(material_id)
 
     _remove_file(mat.thumbnail)
