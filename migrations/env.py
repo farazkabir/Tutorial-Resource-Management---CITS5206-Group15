@@ -1,3 +1,11 @@
+"""
+Alembic migration environment for Flask-Migrate.
+
+Do not edit migration version files by hand unless you know Alembic.
+Run: flask --app wsgi:app db migrate -m "message"
+     flask --app wsgi:app db upgrade
+"""
+
 import logging
 from logging.config import fileConfig
 

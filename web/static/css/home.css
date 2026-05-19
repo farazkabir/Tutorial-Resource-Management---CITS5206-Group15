@@ -1,9 +1,27 @@
-/* Home page custom styles (keep Tailwind-first). */
+/**
+ * Supplemental styles for the WMAA Tutorial platform.
+ *
+ * Most layout uses Tailwind CSS (CDN in base.html). Add only rules that are
+ * awkward to express with utility classes or repeated across many templates.
+ */
 
-/* Add only non-Tailwind or highly repetitive styles here. */
-
-/* home.css */
+/* Primary navigation links in header and footer */
 .nav-link {
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0f172a; /* slate-900 */
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+  text-decoration-color: #2563eb; /* blue-600 */
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+}
     border-radius: 0.375rem; /* rounded-md */
     padding: 0.5rem 0.75rem; /* px-3 py-2 */
     font-size: 0.875rem; /* text-sm */
