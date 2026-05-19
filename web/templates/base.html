@@ -18,24 +18,6 @@
   </head>
 
   <body class="font-sans min-h-screen bg-slate-50 text-slate-900 antialiased flex flex-col">
-    <!-- <header class="border-b border-slate-200/70 bg-white/80 backdrop-blur">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <a href="{{ url_for('main.home') }}" class="flex items-center gap-3">
-          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5A7.5 7.5 0 003 6.5v12A7.5 7.5 0 017.5 17c1.746 0 3.332.477 4.5 1.253m0 0C13.168 17.477 14.754 17 16.5 17A7.5 7.5 0 0121 18.5v-12A7.5 7.5 0 0016.5 5c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-          </span>
-          <span class="text-base font-semibold tracking-tight text-slate-900">WMAA Tutorials</span>
-        </a>
-  
-        <nav class="hidden items-center gap-1 sm:flex">
-          <a href="{{ url_for('main.home') }}" class="nav-link">Home</a>
-          <a href="{{ url_for('main.materials') }}" class="nav-link">Materials</a>
-          <a href="{{ url_for('auth.login') }}" class="nav-link">Admin</a>
-        </nav>
-      </div>
-    </header> -->
     <header class="border-b border-slate-200/70 bg-white/80 backdrop-blur sticky top-0 z-50">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <a href="{{ url_for('main.home') }}" class="flex items-center gap-3">
@@ -59,14 +41,15 @@
           </svg>
         </button>
       </div>
-    
-      <div id="mobile-menu" class="hidden border-t border-slate-100 bg-white sm:hidden">
-        <nav class="flex flex-col space-y-1 px-4 py-4">
-          <a href="{{ url_for('main.home') }}" class="block rounded-lg px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600">Home</a>
-          <a href="{{ url_for('main.materials') }}" class="block rounded-lg px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600">Materials</a>
-          <a href="{{ url_for('auth.login') }}" class="block rounded-lg px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600">Admin</a>
+
+      <div id="mobile-menu" class="overflow-hidden max-h-0 opacity-0 transition-all duration-300 ease-in-out border-t border-slate-100 bg-white sm:hidden">
+        <nav class="flex flex-col space-y-4 px-4 py-4">
+          <a href="{{ url_for('main.home') }}" class="mobile-nav-link nav-link inline-block w-fit">Home</a>
+          <a href="{{ url_for('main.materials') }}" class="mobile-nav-link nav-link inline-block w-fit">Materials</a>
+          <a href="{{ url_for('auth.login') }}" class="mobile-nav-link nav-link inline-block w-fit">Admin</a>
         </nav>
       </div>
+      
     </header>
     <main class="flex-1">
       {# Flask flash messages (login errors, CRUD success, etc.) #}
@@ -119,13 +102,35 @@
       document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('mobile-menu-button');
         const menu = document.getElementById('mobile-menu');
+        const links = document.querySelectorAll('.mobile-nav-link');
+
+        function toggleMenu() {
+          const isClosed = menu.classList.contains('max-h-0'); // check if the menu is closed
+          if (isClosed) {
+            // OPEN: remove closed classes, add open classes
+            menu.classList.remove('max-h-0', 'opacity-0');
+            menu.classList.add('max-h-64', 'opacity-100');
+            btn.setAttribute('aria-expanded', 'true');
+          } else {
+            // CLOSE: remove open classes, add closed classes
+            menu.classList.remove('max-h-64', 'opacity-100');
+            menu.classList.add('max-h-0', 'opacity-0');
+            btn.setAttribute('aria-expanded', 'false');
+          }
+        }
         if (btn && menu) {
-          btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
+          btn.addEventListener('click', toggleMenu); //  handles the "Auto-Close" logic
+          links.forEach(link => {
+            link.addEventListener('click', () => {
+              if (btn.getAttribute('aria-expanded') === 'true') {
+                toggleMenu();
+              }
+            });
           });
         }
       });
     </script>
+
   </body>
 </html>
 

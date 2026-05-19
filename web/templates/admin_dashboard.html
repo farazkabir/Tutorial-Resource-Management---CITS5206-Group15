@@ -12,11 +12,11 @@
 
     <div class="flex items-center gap-3">
       <a href="{{ url_for('admin.create_material') }}"
-        class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors">
-        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2.5 sm:px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors">
+        <svg class="h-5 w-5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
-        New Tutorial
+        <span class="hidden sm:inline">New Tutorial</span>
       </a>
 
       <div class="relative">
@@ -62,6 +62,8 @@
         </div>
         {% endif %}
 
+        <!-- <span class="rounded-full bg-blue-50 px-2.5 py-0.5 font-medium text-blue-700">{{ m.category.name }}</span> -->
+
         <div class="min-w-0">
           <div class="font-semibold text-slate-900 truncate">{{ m.title }}</div>
           {% if m.description %}
@@ -69,7 +71,7 @@
           {% endif %}
           <div class="mt-2 flex flex-wrap items-center gap-2 text-xs">
             {% if m.category %}
-            <span class="rounded-full bg-blue-50 px-2.5 py-0.5 font-medium text-blue-700">{{ m.category.name }}</span>
+            <span class="category-badge" data-category="{{ m.category.name }}"> {{ m.category.name }}</span>
             {% endif %}
             <span class="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">{{ m.media_type }}</span>
             {% if m.is_published %}
@@ -85,6 +87,10 @@
       </div>
 
       <div class="flex flex-shrink-0 items-center gap-1">
+        <a href="{{ url_for('main.view_material', material_id=m.id) }}" target="_blank"
+           class="rounded-md p-2 text-slate-400 hover:bg-green-100 hover:text-green-600" title="View">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        </a>
         <a href="{{ url_for('admin.edit_material', material_id=m.id) }}"
           class="rounded-md p-2 text-slate-400 hover:bg-blue-50 hover:text-blue-600" title="Edit">
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,7 +100,7 @@
         </a>
 
         <form method="post" action="{{ url_for('admin.delete_material', material_id=m.id) }}"
-          onsubmit="return confirm('Delete this tutorial?')">
+          onsubmit="return confirm('Delete this tutorial?')">  
           <button type="submit" class="rounded-md p-2 text-slate-400 hover:bg-red-50 hover:text-red-600" title="Delete">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -143,4 +149,34 @@
     });
   }, 3000);
 </script>
+
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Select all forms with the class 'delete-form'
+    const deleteForms = document.querySelectorAll('.delete-form');
+
+    deleteForms.forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault(); // This stops the immediate deletion
+
+        Swal.fire({
+          title: 'Delete this tutorial?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444', // Red for delete
+          cancelButtonColor: '#64748b',  // Slate for cancel
+          confirmButtonText: 'Yes, delete it',
+          customClass: {
+            popup: 'rounded-2xl' // Matches your UI style
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit(); // Only now does the form actually send to Flask
+          }
+        });
+      });
+    });
+  });
+</script> -->
 {% endblock %}
